@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Still Life</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="login-page" class="auth-page">
+        <div class="auth-container">
+            <div class="auth-card">
+                <h1>Still Life</h1>
+                <p class="tagline">A quiet place for everything that matters.</p>
+                <h2>Login</h2>
+                <form id="login-form">
+                    <input type="text" id="login-username" placeholder="Username" required>
+                    <input type="password" id="login-password" placeholder="Password" required>
+                    <button type="submit">Login</button>
+                </form>
+                <p>Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Page -->
+    <div id="signup-page" class="auth-page hidden">
+        <div class="auth-container">
+            <div class="auth-card">
+                <h1>Still Life</h1>
+                <p class="tagline">A quiet place for everything that matters.</p>
+                <h2>Sign Up</h2>
+                <form id="signup-form">
+                    <input type="text" id="signup-username" placeholder="Username" required>
+                    <input type="password" id="signup-password" placeholder="Password" required>
+                    <button type="submit">Create Account</button>
+                </form>
+                <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="hidden">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <div class="nav-left">
+                <div class="logo">🌿</div>
+                <div class="site-name">Still Life</div>
+            </div>
+            <div class="nav-center">
+                <ul class="nav-menu">
+                    <li onclick="navigateTo('dashboard-home')" class="active">Dashboard</li>
+                    <li onclick="navigateTo('tasks')">Daily Tasks</li>
+                    <li onclick="navigateTo('personal')">Personal Details</li>
+                    <li onclick="navigateTo('activity')">Activity Log</li>
+                    <li onclick="navigateTo('notes')">Notes</li>
+                    <li onclick="navigateTo('dreams')">Dreams</li>
+                    <li onclick="navigateTo('work')">Work Journal</li>
+                    <li onclick="navigateTo('reports')">My Reports</li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <div id="user-profile" class="profile-icon" onclick="toggleProfileMenu()">👤</div>
+                <button onclick="toggleDarkMode()" class="theme-toggle">🌙</button>
+                <button onclick="logout()" class="signout-btn">Sign Out</button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Dashboard Home -->
+            <div id="dashboard-home" class="content-section active">
+                <div class="welcome">
+                    <h1>Welcome back, <span id="welcome-username"></span></h1>
+                    <p class="quote">"A quiet place for everything that matters."</p>
+                    <div class="date-time">
+                        <span id="current-date"></span>
+                        <span id="current-time"></span>
+                    </div>
+                </div>
+                
+                <div class="summary-cards">
+                    <div class="card" onclick="navigateTo('tasks')">
+                        <h3>Tasks</h3>
+                        <div class="card-value" id="summary-tasks">0</div>
+                    </div>
+                    <div class="card" onclick="navigateTo('notes')">
+                        <h3>Notes</h3>
+                        <div class="card-value" id="summary-notes">0</div>
+                    </div>
+                    <div class="card" onclick="navigateTo('activity')">
+                        <h3>Activities</h3>
+                        <div class="card-value" id="summary-activities">0</div>
+                    </div>
+                    <div class="card" onclick="navigateTo('work')">
+                        <h3>Journal</h3>
+                        <div class="card-value" id="summary-journal">0</div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <h2>Quick Start</h2>
+                    <div class="action-grid">
+                        <button onclick="navigateTo('tasks')">Add New Task</button>
+                        <button onclick="navigateTo('notes')">New Note</button>
+                        <button onclick="navigateTo('dreams')">Record Dream</button>
+                        <button onclick="navigateTo('work')">Work Log</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Tasks -->
+            <div id="tasks" class="content-section hidden">
+                <h2>Daily Tasks</h2>
+                <div class="task-controls">
+                    <input type="text" id="new-task" placeholder="New task...">
+                    <button onclick="addTask()">Add Task</button>
+                </div>
+                <div class="stats">
+                    <span>Total: <span id="total-tasks">0</span></span>
+                    <span>Completed: <span id="completed-tasks">0</span></span>
+                    <span>Pending: <span id="pending-tasks">0</span></span>
+                </div>
+                <ul id="task-list" class="list"></ul>
+            </div>
+
+            <!-- Personal Details -->
+            <div id="personal" class="content-section hidden">
+                <h2>Personal Details</h2>
+                <div class="form-grid">
+                    <label>Name: <input id="personal-name" type="text"></label>
+                    <label>Email: <input id="personal-email" type="email"></label>
+                    <label>Phone: <input id="personal-phone" type="tel"></label>
+                    <label>Birthday: <input id="personal-birthday" type="date"></label>
+                    <label>Bio: <textarea id="personal-bio"></textarea></label>
+                </div>
+                <button onclick="savePersonalDetails()">Save Details</button>
+            </div>
+
+            <!-- Activity Log -->
+            <div id="activity" class="content-section hidden">
+                <h2>Activity Log</h2>
+                <div class="entry-form">
+                    <input id="activity-desc" type="text" placeholder="What did you do today?">
+                    <button onclick="addActivity()">Log Activity</button>
+                </div>
+                <ul id="activity-list" class="list"></ul>
+            </div>
+
+            <!-- Notes -->
+            <div id="notes" class="content-section hidden">
+                <h2>Private Notes</h2>
+                <div class="entry-form">
+                    <input id="note-title" type="text" placeholder="Note title">
+                    <textarea id="note-content" placeholder="Write your note..."></textarea>
+                    <button onclick="addNote()">Save Note</button>
+                </div>
+                <input type="text" id="note-search" placeholder="Search notes..." onkeyup="searchNotes()">
+                <ul id="notes-list" class="list"></ul>
+            </div>
+
+            <!-- Dreams -->
+            <div id="dreams" class="content-section hidden">
+                <h2>Dreams & Aspirations</h2>
+                <div class="entry-form">
+                    <input id="dream-title" type="text" placeholder="Dream title">
+                    <textarea id="dream-content" placeholder="Describe your dream..."></textarea>
+                    <button onclick="addDream()">Save Dream</button>
+                </div>
+                <ul id="dreams-list" class="list"></ul>
+            </div>
+
+            <!-- Work Journal -->
+            <div id="work" class="content-section hidden">
+                <h2>Work Journal</h2>
+                <div class="entry-form">
+                    <textarea id="work-entry" placeholder="Today's work log..."></textarea>
+                    <button onclick="addWorkEntry()">Save Entry</button>
+                </div>
+                <ul id="work-list" class="list"></ul>
+            </div>
+
+            <!-- Reports -->
+            <div id="reports" class="content-section hidden">
+                <h2>My Reports</h2>
+                <div class="report-overview">
+                    <div class="report-cards">
+                        <!-- Dynamic cards -->
+                    </div>
+                    <div class="charts">
+                        <canvas id="activity-chart" width="400" height="200"></canvas>
+                        <canvas id="productivity-chart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+                <div class="reflection">
+                    <h3>Monthly Reflection</h3>
+                    <p id="monthly-reflection"></p>
+                </div>
+                <button onclick="exportPDF()">Download PDF Report</button>
+                <button onclick="window.print()">Print Report</button>
+            </div>
+
+            <!-- Privacy -->
+            <div id="privacy" class="content-section hidden">
+                <h2>Privacy & Security</h2>
+                <div class="privacy-content">
+                    <h3>Privacy First</h3>
+                    <p>Your information belongs to you.</p>
+                    <p>Still Life is designed to provide a private environment for your journals, notes, dreams, activities, work records, and personal information.</p>
+                    <!-- More content from prompt -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>Still Life — "A quiet place for everything that matters."</p>
+            <p>For maximum privacy and security, always Sign Out after using Still Life.</p>
+            <p>© 2026 Still Life. All Rights Reserved.</p>
+            <p><a href="#" onclick="navigateTo('privacy')">Privacy</a> | Security | Terms</p>
+        </footer>
+    </div>
+
+    <!-- Profile Menu -->
+    <div id="profile-menu" class="hidden profile-menu">
+        <p onclick="logout()">Sign Out</p>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
